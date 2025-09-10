@@ -35,74 +35,78 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sokinpui/fix-diff-go"
+	fixdiff "github.com/sokinpui/fix-diff-go"
 )
 
-func main() {
-	originalFile := `line 1
+// originalFileContent represents the complete, original content of the source file.
+const originalFileContent = `line 1
 line 2
 line 3
-line 4: A line to be removed.
+line 4
 line 5
 line 6
 line 7
-line 8: Some more original text.
+line 8
 line 9
-line 10
-`
+line 10`
 
-	// This diff has an incorrect line number in the hunk header (e.g., "@@ -1,5 +1,5 @@")
-	// but the content of the hunk is correct. Standard tools would fail.
-	brokenDiff := `--- a/original.txt
-+++ b/modified.txt
-@@ -1,5 +1,5 @@
+// incorrectDiffContent is a unified diff with incorrect hunk headers.
+// For example, `@@ -99,5 +99,5 @@` is wrong, as the change happens near the top of the file.
+const incorrectDiffContent = `--- a/test/file.txt
++++ b/test/file.txt
+@@ -99,5 +99,5 @@
  line 2
  line 3
--line 4: A line to be removed.
-+line 4: A line that was added.
+-line 4
++line four
  line 5
  line 6
 `
 
-	fixedDiff, err := fixdiff.Fix(brokenDiff, originalFile)
+func main() {
+	// Call the Fix function with the incorrect diff and the original file content.
+	correctedDiff, err := fixdiff.Fix(incorrectDiffContent, originalFileContent)
 	if err != nil {
-		log.Fatalf("Failed to fix diff: %v", err)
+		log.Fatalf("Failed to fix the diff: %v", err)
 	}
 
-	fmt.Println("Original Broken Diff:")
-	fmt.Println(brokenDiff)
-	fmt.Println("\n---")
-	fmt.Println("\nFixed Diff (with correct line numbers):")
-	fmt.Println(fixedDiff)
+	// Print the newly generated, correct diff.
+	fmt.Println("--- Original Incorrect Diff ---")
+	fmt.Println(incorrectDiffContent)
+	fmt.Println("\n--- Corrected Diff ---")
+	fmt.Println(correctedDiff)
 }
 ```
 
 #### Output of Example
 
 ```text
-Original Broken Diff:
---- a/original.txt
-+++ b/modified.txt
-@@ -1,5 +1,5 @@
+--- Original Incorrect Diff ---
+--- a/test/file.txt
++++ b/test/file.txt
+@@ -99,5 +99,5 @@
  line 2
  line 3
--line 4: A line to be removed.
-+line 4: A line that was added.
+-line 4
++line four
  line 5
  line 6
 
----
 
-Fixed Diff (with correct line numbers):
---- a/original.txt
-+++ b/modified.txt
-@@ -1,7 +1,7 @@
+--- Corrected Diff ---
+--- a/test/file.txt
++++ b/test/file.txt
+@@ -1,10 +1,11 @@
  line 1
  line 2
  line 3
--line 4: A line to be removed.
-+line 4: A line that was added.
+-line 4
++line four
  line 5
  line 6
  line 7
+ line 8
+ line 9
+ line 10
++
 ```
