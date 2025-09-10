@@ -24,7 +24,7 @@ func Fix(diffContent, originalContent string) (string, error) {
 // applyPatches constructs the modified file content by applying the changes from each hunk
 // to the original file content.
 func applyPatches(originalContent string, hunks []*Hunk) (string, error) {
-	originalLines := difflib.SplitLines(originalContent)
+	originalLines := strings.Split(originalContent, "\n")
 	var modifiedLines []string
 	lastIndex := 0
 
@@ -54,7 +54,7 @@ func applyPatches(originalContent string, hunks []*Hunk) (string, error) {
 		modifiedLines = append(modifiedLines, originalLines[lastIndex:]...)
 	}
 
-	return strings.Join(modifiedLines, ""), nil
+	return strings.Join(modifiedLines, "\n"), nil
 }
 
 // findSnippetIndex searches for a sequence of lines (snippet) within a larger set of lines,
@@ -72,6 +72,7 @@ func findSnippetIndex(lines, snippet []string, startIndex int) (int, error) {
 			return i, nil
 		}
 	}
+
 	return -1, fmt.Errorf("snippet not found")
 }
 
@@ -81,8 +82,7 @@ func buildSearchSnippet(hunk *Hunk) []string {
 	var snippet []string
 	for _, line := range hunk.Lines {
 		if line.Type == ContextLine || line.Type == RemovedLine {
-			// difflib.SplitLines keeps the newline characters, so we add them back for an accurate search.
-			snippet = append(snippet, line.Content+"\n")
+			snippet = append(snippet, line.Content)
 		}
 	}
 	return snippet
@@ -94,7 +94,7 @@ func buildModifiedSnippet(hunk *Hunk) []string {
 	var snippet []string
 	for _, line := range hunk.Lines {
 		if line.Type == ContextLine || line.Type == AddedLine {
-			snippet = append(snippet, line.Content+"\n")
+			snippet = append(snippet, line.Content)
 		}
 	}
 	return snippet

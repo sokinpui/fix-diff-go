@@ -53,6 +53,8 @@ func Parse(reader io.Reader) (*UnifiedDiff, error) {
 			currentHunk.Lines = append(currentHunk.Lines, Line{Content: line[1:], Type: RemovedLine})
 		case strings.HasPrefix(line, " ") && currentHunk != nil:
 			currentHunk.Lines = append(currentHunk.Lines, Line{Content: line[1:], Type: ContextLine})
+		case currentHunk != nil && len(line) == 0:
+			currentHunk.Lines = append(currentHunk.Lines, Line{Content: "", Type: ContextLine})
 		}
 	}
 
