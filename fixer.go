@@ -7,8 +7,6 @@ import (
 	"github.com/pmezard/go-difflib/difflib"
 )
 
-// Fix takes a potentially incorrect unified diff and the original file content as strings.
-// It reconstructs the hunk headers with correct line numbers and returns a valid unified diff string.
 func Fix(diffContent, originalContent string) (string, error) {
 	parsedDiff, err := Parse(strings.NewReader(diffContent))
 	if err != nil {

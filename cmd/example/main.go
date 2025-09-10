@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	fixdiff "fix-diff"
+	fixdiff "github.com/sokinpui/fix-diff-go"
 )
 
 // originalFileContent represents the complete, original content of the source file.
@@ -21,8 +21,8 @@ line 10`
 
 // incorrectDiffContent is a unified diff with incorrect hunk headers.
 // For example, `@@ -99,5 +99,5 @@` is wrong, as the change happens near the top of the file.
-const incorrectDiffContent = `--- a/file.txt
-+++ b/file.txt
+const incorrectDiffContent = `--- a/test/file.txt
++++ b/test/file.txt
 @@ -99,5 +99,5 @@
  line 2
  line 3

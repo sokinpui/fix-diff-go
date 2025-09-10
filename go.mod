@@ -1,4 +1,4 @@
-module fix-diff
+module github.com/sokinpui/fix-diff-go
 
 go 1.24.1
 

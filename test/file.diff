@@ -1,6 +1,6 @@
 --- Corrected Diff ---
---- a/file.txt
-+++ b/file.txt
+--- a/test/file.txt
++++ b/test/file.txt
 @@ -1,10 +1,11 @@
  line 1
  line 2
