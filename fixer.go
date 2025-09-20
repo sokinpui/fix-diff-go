@@ -63,7 +63,7 @@ func findSnippetIndex(lines, snippet []string, startIndex int) (int, error) {
 	for i := startIndex; i <= len(lines)-len(snippet); i++ {
 		match := true
 		for j := 0; j < len(snippet); j++ {
-			if lines[i+j] != snippet[j] {
+			if strings.TrimSpace(lines[i+j]) != strings.TrimSpace(snippet[j]) {
 				match = false
 				break
 			}
